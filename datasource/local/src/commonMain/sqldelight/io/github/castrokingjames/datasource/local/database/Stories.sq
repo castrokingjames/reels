@@ -1,0 +1,48 @@
+--
+-- Stories
+--
+-- Usable by: Reels
+-- Object Key: Surrogate (id)
+-- Member Type: Table
+-- Usage: Look-up/Reference
+--
+CREATE TABLE IF NOT EXISTS Stories (
+  id TEXT NOT NULL,
+  description TEXT NOT NULL,
+  thumbnail TEXT NOT NULL,
+  url TEXT NOT NULL,
+  likes INTEGER NOT NULL,
+  shares INTEGER NOT NULL,
+  createdAt INTEGER NOT NULL,
+  PRIMARY KEY (id)
+);
+
+--
+-- StoryIndices
+--
+-- Usable by: Reels
+-- Member Type: Index
+-- Usage: Optimization
+--
+CREATE INDEX IF NOT EXISTS StoryIndices ON Stories(id);
+
+upsert:
+INSERT INTO Stories
+VALUES ?
+ON CONFLICT(id) DO
+UPDATE SET description=excluded.description, thumbnail=excluded.thumbnail, url=excluded.url, likes=excluded.likes, shares=excluded.shares, createdAt=excluded.createdAt;
+
+selectAll:
+SELECT Stories.* FROM Stories
+ORDER BY Stories.createdAt DESC;
+
+selectAllByFeedId:
+SELECT Stories.* FROM Stories
+  JOIN FeedStories ON Stories.id = FeedStories.storyId
+  JOIN Feeds ON Feeds.id = FeedStories.feedId
+WHERE Feeds.id = :feedId
+ORDER BY Stories.createdAt DESC;
+
+selectByStoryId:
+SELECT Stories.* FROM Stories
+WHERE Stories.id = :storyId;

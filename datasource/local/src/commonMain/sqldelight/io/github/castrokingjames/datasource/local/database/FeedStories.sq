@@ -1,0 +1,27 @@
+--
+-- FeedStories
+--
+-- Usable by: Reels
+-- Object Key(s): feedId, storyId
+-- Member Type: Table
+-- Usage: Matching (one-to-many)
+--
+CREATE TABLE IF NOT EXISTS FeedStories (
+  feedId TEXT NOT NULL,
+  storyId TEXT NOT NULL,
+  PRIMARY KEY (feedId, storyId),
+  FOREIGN KEY (feedId) REFERENCES Feeds(id) ON DELETE CASCADE,
+  FOREIGN KEY (storyId) REFERENCES Stories(id) ON DELETE CASCADE
+);
+
+--
+-- FeedStoriesIndices
+--
+-- Usable by: Reels
+-- Member Type: Index
+-- Usage: Optimization
+--
+CREATE INDEX IF NOT EXISTS FeedStoriesIndices ON FeedStories(feedId, storyId);
+
+upsert:
+INSERT OR REPLACE INTO FeedStories VALUES ?;

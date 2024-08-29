@@ -1,0 +1,32 @@
+--
+-- Feeds
+--
+-- Usable by: Reels
+-- Object Key: Surrogate (id)
+-- Member Type: Table
+-- Usage: Look-up/Reference
+--
+CREATE TABLE IF NOT EXISTS Feeds (
+  id TEXT NOT NULL,
+  title TEXT NOT NULL,
+  thumbnail TEXT NOT NULL,
+  PRIMARY KEY (id)
+);
+
+--
+-- FeedIndices
+--
+-- Usable by: Reels
+-- Member Type: Index
+-- Usage: Optimization
+--
+CREATE INDEX IF NOT EXISTS FeedIndices ON Feeds(id);
+
+upsert:
+INSERT INTO Feeds
+VALUES ?
+ON CONFLICT(id) DO
+UPDATE SET title=excluded.title, thumbnail=excluded.thumbnail;
+
+selectAll:
+SELECT Feeds.* FROM Feeds;
